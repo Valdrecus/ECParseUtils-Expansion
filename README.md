@@ -3,7 +3,7 @@ PlaceholderAPI expansion for parsing and retrieving data of other players.
 
 # Usage
 ### 🕒 Playtime
-`%parseutils_seconds_played[Notch]%`
+`%parseutils_seconds_played_[Notch]%`
 → 123456
 Total playtime in seconds.
 
