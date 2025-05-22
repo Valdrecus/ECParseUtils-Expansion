@@ -68,3 +68,4 @@ Example using a placeholder inside another placeholder > `%parseutils_parseother
 - If the player has never joined the server, any placeholder returns "`PLAYER_NOT_FOUND`".
 - All player names are case-insensitive.
 - The player name must be enclosed in brackets: [player].
+- 
