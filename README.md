@@ -58,9 +58,8 @@ Example using `formatted:` > `%parseutils_lastseen_formatted:minutes_[Notch]%`
 Minutes since last online with thousands separator formatting.
 
 ### Parsing other placeholders
-`%parseutils_parseother:[Notch]_placeholder%`
-
-Example using a placeholder inside another placeholder > `%parseutils_parseother:[Notch]_formatter_text_uppercase_{player_name}%`
+`%parseutils_parseother:[Notch]_placeholder%`  
+Example using a placeholder inside another placeholder > `%parseutils_parseother:[Notch]_formatter_text_uppercase_{player_name}%`  
 → NOTCH
 
 # Behavior
