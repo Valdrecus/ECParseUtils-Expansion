@@ -32,28 +32,28 @@ Player's UUID.
 → Notch
 Player’s real name (case-sensitive).
 
-`%parseutils_first_joined_[Notch]%`
-→ May 22, 2025 at 2:04 AM
-First join date in UTC time.
+`%parseutils_first_joined_[Notch]%`  
+→ May 22, 2025 at 2:04 AM  
+First join date in UTC time.  
 
-### Using parameters:
-`%parseutils_first_joined_[Notch]_<timezone>_<locale>%`
-→ Returns first join date in specified timezone and language format.
+Using parameters:  
+`%parseutils_first_joined_[Notch]_<timezone>_<locale>%`  
+→ Returns first join date in specified timezone and language format.  
 
-Examples:
-`%parseutils_first_joined_[Notch]_America/New_York_en_US%`
-→ May 21, 2025 10:04 PM (EDT, English format)
+Examples:  
+`%parseutils_first_joined_[Notch]_America/New_York_en_US%`  
+→ May 21, 2025 10:04 PM (EDT, English format)  
 
-`%parseutils_first_joined_[Notch]_Europe/Madrid_es_ES%`
-→ 22 may. 2025 4:04 AM (CEST, Spanish format)
+`%parseutils_first_joined_[Notch]_Europe/Madrid_es_ES%`  
+→ 22 may. 2025 4:04 AM (CEST, Spanish format)  
 
-`%parseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP%`
-→ 5月22日 2025 11:04 午前 (JST, Japanese format)
+`%parseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP%`  
+→ 5月22日 2025 11:04 午前 (JST, Japanese format)  
 
-:warning: **Invalid parameters default to UTC/English format.**
+:warning: **Invalid parameters default to UTC/English format.**  
 
-Timezone (Use TZ Identifier): https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-Locale (Use ID): https://www.localeplanet.com/icu/ (Valid format: idiom_REGION)
+Timezone (Use TZ Identifier): https://en.wikipedia.org/wiki/List_of_tz_database_time_zones  
+Locale (Use ID): https://www.localeplanet.com/icu/ (Valid format: idiom_REGION)  
 
 ### 📅 Last seen
 `%parseutils_lastseen_seconds_[Notch]%`  
