@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ftxeven</groupId>
   <artifactId>parseutils</artifactId>
-  <version>1.0</version>
+  <version>1.6</version>
   <name>Extension-parseutils</name>
 
   <properties>
