@@ -9,11 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.Locale;
-import java.util.UUID;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.util.*;
 
 public class ParseUtils extends PlaceholderExpansion {
 
@@ -106,9 +103,10 @@ public class ParseUtils extends PlaceholderExpansion {
             formatted = true;
             type = identifier.substring("formatted:".length(), splitIndex).toLowerCase(Locale.ROOT);
             playerName = extractName(identifier.substring(splitIndex + 1));
-        } else if (identifier.contains("_[") && identifier.endsWith("]")) {
+        } else if (identifier.contains("_[") && identifier.contains("]")) {
             int splitIndex = identifier.indexOf("_[");
-            type = identifier.substring(0, splitIndex).toLowerCase(Locale.ROOT);
+            String fullType = identifier.substring(0, splitIndex).toLowerCase(Locale.ROOT);
+            type = fullType.startsWith("first_joined") ? "first_joined" : fullType;
             playerName = extractName(identifier.substring(splitIndex + 1));
         } else {
             return null;
@@ -147,10 +145,19 @@ public class ParseUtils extends PlaceholderExpansion {
                 long firstPlayed = target.getFirstPlayed();
                 if (firstPlayed <= 0) return "PLAYER_NOT_FOUND";
 
+                if (identifier.contains("]_") && identifier.indexOf("]_") < identifier.length() - 1) {
+                    try {
+                        String result = handleFirstJoinedWithTimezoneAndLocale(target, identifier);
+                        if (result != null) {
+                            return result;
+                        }
+                    } catch (Exception e) {}
+                }
+
                 Date date = new Date(firstPlayed);
-                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy 'at' h:mm a", Locale.ENGLISH);
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a", Locale.ENGLISH);
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                return sdf.format(date);
+                return capitalizeFirstLetter(sdf.format(date));
             }
             case "lastseen_seconds":
             case "lastseen_minutes":
@@ -177,9 +184,51 @@ public class ParseUtils extends PlaceholderExpansion {
         }
     }
 
+    private String handleFirstJoinedWithTimezoneAndLocale(OfflinePlayer target, String identifier) {
+        long firstPlayed = target.getFirstPlayed();
+        if (firstPlayed <= 0) return null;
+
+        String paramsPart = identifier.substring(identifier.indexOf("]_") + 2);
+        String[] parts = paramsPart.split("_");
+        if (parts.length < 2) return null;
+
+        int lastUnderscore = paramsPart.lastIndexOf('_');
+        int prevUnderscore = paramsPart.lastIndexOf('_', lastUnderscore - 1);
+        if (prevUnderscore == -1) return null;
+
+        String timezoneStr = paramsPart.substring(0, prevUnderscore);
+        String localeStr = paramsPart.substring(prevUnderscore + 1);
+
+        String[] localeParts = localeStr.split("_");
+        Locale locale = localeParts.length == 1 ?
+                new Locale(localeParts[0]) : new Locale(localeParts[0], localeParts[1]);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy h:mm a", locale);
+        TimeZone tz = TimeZone.getTimeZone(timezoneStr);
+        sdf.setTimeZone(tz);
+
+        Date date = new Date(firstPlayed);
+        return capitalizeFirstLetter(sdf.format(date));
+    }
+
+    private String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+
+        for (int i = 0; i < input.length(); i++) {
+            if (Character.isLetter(input.charAt(i))) {
+                return input.substring(0, i) +
+                        Character.toUpperCase(input.charAt(i)) +
+                        input.substring(i + 1);
+            }
+        }
+        return input;
+    }
+
     private String extractName(String input) {
-        if (input.startsWith("[") && input.endsWith("]")) {
-            return input.substring(1, input.length() - 1);
+        if (input.startsWith("[") && input.contains("]")) {
+            return input.substring(1, input.indexOf("]"));
         }
         return null;
     }
