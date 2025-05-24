@@ -33,7 +33,7 @@ public class ParseUtils extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.5";
+        return "1.6";
     }
 
     @Override
