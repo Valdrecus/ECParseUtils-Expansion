@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="server-icon.png" alt="Logo" width="128">
+</p>
+
 <h1>🧩 ParseUtils-Expansion</h1>
 
 <p>
