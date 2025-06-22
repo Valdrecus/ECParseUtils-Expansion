@@ -11,6 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class ParseUtils extends PlaceholderExpansion {
 
@@ -23,17 +27,22 @@ public class ParseUtils extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "parseutils";
+        return "ECParseUtils";
     }
 
     @Override
     public String getAuthor() {
-        return "ftxeven";
+        return "ftxeven, Valdrecus";
     }
 
     @Override
     public String getVersion() {
         return "1.6";
+        
+    }
+    @Override
+    public String getDescription() {
+        return "ParseUtils - Forked by Valdrecus, originally made by ftxeven. Adds useful player info placeholders.";
     }
 
     @Override
@@ -168,6 +177,121 @@ public class ParseUtils extends PlaceholderExpansion {
                 }
                 return "Desconectado";
             }
+            case "rank": {
+                if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return "Vault no encontrado";
+            
+                try {
+                    RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> rsp =
+                        Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+                    if (rsp == null) return "Sin datos";
+                    net.milkbowl.vault.permission.Permission perms = rsp.getProvider();
+            
+                    String[] groups = perms.getPlayerGroups(null, target);
+                    if (groups.length == 0) return "Sin rango";
+            
+                    String mainGroup = groups[0]; // el principal
+                    // Aquí podrías agregar soporte para tiempo restante con LuckPerms API
+                    return mainGroup;
+                } catch (Exception e) {
+                    return "Error al obtener rango";
+                }
+            }
+            case "rank_expire": {
+                if (!Bukkit.getPluginManager().isPluginEnabled("LuckPerms")) return "LuckPerms no encontrado";
+                try {
+                    net.luckperms.api.LuckPerms luckPerms = net.luckperms.api.LuckPermsProvider.get();
+                    net.luckperms.api.model.user.User lpUser = luckPerms.getUserManager().loadUser(target.getUniqueId()).join();
+                    if (lpUser == null) return "Sin rango";
+            
+                    // Buscar el grupo con mayor peso
+                    Optional<Map.Entry<String, Long>> result = lpUser.getNodes().stream()
+                        .filter(n -> n.getType().isGroup())
+                        .map(n -> (net.luckperms.api.node.types.InheritanceNode) n)
+                        .map(node -> {
+                            String group = node.getGroupName();
+                            long expiresIn = node.hasExpiry() ? node.getExpiryDuration().getSeconds() : -1;
+            
+                            int weight = Optional.ofNullable(luckPerms.getGroupManager().getGroup(group))
+                                .flatMap(g -> g.getWeight()).orElse(0);
+            
+                            return Map.entry(group + (expiresIn != -1 ? ":" + expiresIn : ""), (long) weight);
+                        })
+                        .max(Comparator.comparingLong(Map.Entry::getValue));
+            
+                    if (result.isEmpty()) return "Sin grupo";
+            
+                    String[] parts = result.get().getKey().split(":");
+                    String groupName = parts[0];
+                    long remaining = parts.length > 1 ? Long.parseLong(parts[1]) : -1;
+            
+                    if (remaining == -1) return groupName + " (Permanente)";
+                    return groupName + " (" + formatDuration(remaining) + " restantes)";
+            
+                } catch (Exception e) {
+                    return "Error al obtener rango";
+                }
+            }
+            case "afk_time": {
+                if (!Bukkit.getPluginManager().isPluginEnabled("Essentials")) return "Essentials no encontrado";
+                try {
+                    com.earth2me.essentials.Essentials essentials = (com.earth2me.essentials.Essentials)
+                            Bukkit.getPluginManager().getPlugin("Essentials");
+            
+                    com.earth2me.essentials.User user = essentials.getUser(target.getUniqueId());
+                    if (user == null || !user.isAfk()) return "0s";
+            
+                    long afkTime = (System.currentTimeMillis() - user.getAfkSince()) / 1000;
+                    return afkTime + "s";
+                } catch (Exception e) {
+                    return "Error AFK";
+                }
+            }
+            case "balance": {
+                if (!Bukkit.getPluginManager().isPluginEnabled("Vault")) return "Vault no encontrado";
+            
+                try {
+                    RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> rsp =
+                        Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+                    if (rsp == null) return "Sin economía";
+            
+                    net.milkbowl.vault.economy.Economy econ = rsp.getProvider();
+                    double balance = econ.getBalance(target);
+                    return formatted ? formatter.format(balance) : String.format(Locale.US, "%.2f", balance);
+                } catch (Exception e) {
+                    return "Error al obtener saldo";
+                }
+            }
+            case "totems_used": {
+                if (target.isOnline() && target instanceof Player p) {
+                    int totems = p.getStatistic(Statistic.USE_ITEM, Material.TOTEM_OF_UNDYING);
+                    return String.valueOf(totems);
+                }
+                return "0";
+            }
+            case "proxy": {
+                if (!target.isOnline() || !(target instanceof Player p)) return "Desconectado";
+                String ip = Objects.requireNonNull(p.getAddress()).getAddress().getHostAddress();
+            
+                try {
+                    URL url = new URL("http://ip-api.com/json/" + ip + "?fields=proxy,mobile,hosting,status");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setConnectTimeout(3000);
+                    con.setReadTimeout(3000);
+                    con.setRequestMethod("GET");
+            
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json = in.lines().reduce("", (acc, line) -> acc + line);
+                    in.close();
+            
+                    if (!json.contains("\"status\":\"success\"")) return "No detectado";
+            
+                    boolean isProxy = json.contains("\"proxy\":true") || json.contains("\"hosting\":true") || json.contains("\"mobile\":true");
+            
+                    return isProxy ? "🛡️ Usa VPN o Proxy" : "✅ IP limpia";
+                } catch (Exception e) {
+                    return "Error al verificar";
+                }
+            }
             case "geoip": {
                 if (!target.isOnline() || !(target instanceof Player p)) return "Jugador desconectado";
             
@@ -200,7 +324,7 @@ public class ParseUtils extends PlaceholderExpansion {
                 } catch (Exception e) {
                     return "Error al obtener IP";
                 }
-            } 
+            }
             case "health": {
                 if (target.isOnline() && target instanceof Player p) {
                     double health = p.getHealth();
@@ -306,6 +430,17 @@ public class ParseUtils extends PlaceholderExpansion {
         int start = index + search.length();
         int end = json.indexOf("\"", start);
         return json.substring(start, end);
+    }
+    private String formatDuration(long seconds) {
+        long days = seconds / 86400;
+        long hours = (seconds % 86400) / 3600;
+        long minutes = (seconds % 3600) / 60;
+    
+        StringBuilder sb = new StringBuilder();
+        if (days > 0) sb.append(days).append("d ");
+        if (hours > 0) sb.append(hours).append("h ");
+        if (minutes > 0 || sb.length() == 0) sb.append(minutes).append("m");
+        return sb.toString().trim();
     }
     private String getFlag(String countryCode) {
         if (countryCode == null || countryCode.length() != 2) return "";
