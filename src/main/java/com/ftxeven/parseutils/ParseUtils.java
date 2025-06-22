@@ -151,12 +151,62 @@ public class ParseUtils extends PlaceholderExpansion {
                 boolean online = target.isOnline();
                 return online ? "🟢 En línea" : "🔴 Desconectado";
             }
+            case "exp": {
+                if (target.isOnline() && target instanceof Player p) {
+                    return String.valueOf(p.getTotalExperience());
+                }
+                return "Jugador desconectado";
+            }
+            case "fish_caught": {
+                int fish = target.getStatistic(Statistic.FISH_CAUGHT);
+                return formatted ? formatter.format(fish) : String.valueOf(fish);
+            }
+            case "time_since_death": {
+                if (target.isOnline() && target instanceof Player p) {
+                    int ticks = p.getStatistic(Statistic.TIME_SINCE_DEATH);
+                    return String.valueOf(ticks / 20);
+                }
+                return "Desconectado";
+            }
+            case "geoip": {
+                if (!target.isOnline() || !(target instanceof Player p)) return "Jugador desconectado";
+            
+                String ip = Objects.requireNonNull(p.getAddress()).getAddress().getHostAddress();
+                try {
+                    URL url = new URL("http://ip-api.com/json/" + ip + "?fields=status,country,city,countryCode,query");
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    con.setConnectTimeout(3000);
+                    con.setReadTimeout(3000);
+                    con.setRequestMethod("GET");
+            
+                    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+            
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+            
+                    // Parse JSON
+                    String json = response.toString();
+                    if (!json.contains("\"status\":\"success\"")) return "Localización desconocida";
+            
+                    String country = getValue(json, "country");
+                    String city = getValue(json, "city");
+                    String flag = getFlag(getValue(json, "countryCode"));
+            
+                    return flag + " " + country + " - " + city + " (IP: " + ip + ")";
+                } catch (Exception e) {
+                    return "Error al obtener IP";
+                }
+            } 
             case "health": {
                 if (target.isOnline() && target instanceof Player p) {
                     double health = p.getHealth();
                     return String.format(Locale.US, "%.1f ♥", health);
                 }
-                return "Jugador desconectado";
+                return "Jugador desconectado";    
             }
             case "first_joined": {
                 long firstPlayed = target.getFirstPlayed();
@@ -248,6 +298,20 @@ public class ParseUtils extends PlaceholderExpansion {
             return input.substring(1, input.indexOf("]"));
         }
         return null;
+    }
+    private String getValue(String json, String key) {
+        String search = "\"" + key + "\":\"";
+        int index = json.indexOf(search);
+        if (index == -1) return "";
+        int start = index + search.length();
+        int end = json.indexOf("\"", start);
+        return json.substring(start, end);
+    }
+    private String getFlag(String countryCode) {
+        if (countryCode == null || countryCode.length() != 2) return "";
+        int first = Character.codePointAt(countryCode.toUpperCase(), 0) - 0x41 + 0x1F1E6;
+        int second = Character.codePointAt(countryCode.toUpperCase(), 1) - 0x41 + 0x1F1E6;
+        return new String(Character.toChars(first)) + new String(Character.toChars(second));
     }
 
     private OfflinePlayer findPlayerOptimized(String name) {
