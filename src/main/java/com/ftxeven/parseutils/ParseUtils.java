@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -15,6 +16,21 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
+import net.milkbowl.vault.permission.Permission;
+import net.milkbowl.vault.permission.Permission;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.permission.Permission;
+
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.node.types.PermissionNode;
+import net.luckperms.api.node.types.InheritanceNode;
+
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
+
+import org.bukkit.Material;
 
 public class ParseUtils extends PlaceholderExpansion {
 
@@ -202,31 +218,30 @@ public class ParseUtils extends PlaceholderExpansion {
                     net.luckperms.api.LuckPerms luckPerms = net.luckperms.api.LuckPermsProvider.get();
                     net.luckperms.api.model.user.User lpUser = luckPerms.getUserManager().loadUser(target.getUniqueId()).join();
                     if (lpUser == null) return "Sin rango";
-            
-                    // Buscar el grupo con mayor peso
+
                     Optional<Map.Entry<String, Long>> result = lpUser.getNodes().stream()
-                        .filter(n -> n.getType().isGroup())
+                        .filter(n -> n instanceof net.luckperms.api.node.types.InheritanceNode)
                         .map(n -> (net.luckperms.api.node.types.InheritanceNode) n)
                         .map(node -> {
                             String group = node.getGroupName();
                             long expiresIn = node.hasExpiry() ? node.getExpiryDuration().getSeconds() : -1;
-            
+
                             int weight = Optional.ofNullable(luckPerms.getGroupManager().getGroup(group))
-                                .flatMap(g -> g.getWeight()).orElse(0);
-            
+                                .map(g -> g.getWeight().orElse(0))
+                                .orElse(0);
+
                             return Map.entry(group + (expiresIn != -1 ? ":" + expiresIn : ""), (long) weight);
                         })
                         .max(Comparator.comparingLong(Map.Entry::getValue));
-            
                     if (result.isEmpty()) return "Sin grupo";
-            
+
                     String[] parts = result.get().getKey().split(":");
                     String groupName = parts[0];
                     long remaining = parts.length > 1 ? Long.parseLong(parts[1]) : -1;
-            
+
                     if (remaining == -1) return groupName + " (Permanente)";
                     return groupName + " (" + formatDuration(remaining) + " restantes)";
-            
+
                 } catch (Exception e) {
                     return "Error al obtener rango";
                 }
