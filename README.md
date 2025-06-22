@@ -1,92 +1,138 @@
-# ParseUtils-Expansion
+<h1>🧩 ParseUtils-Expansion</h1>
 
-An advanced PlaceholderAPI expansion that lets you retrieve and format player-specific data such as playtime, kills, health, experience, and more — even for offline players.
+<p>
+  An advanced <a href="https://github.com/PlaceholderAPI/PlaceholderAPI">PlaceholderAPI</a> expansion designed to retrieve and format
+  <strong>detailed player-specific data</strong>, including <strong>playtime, ranks, experience, location, statistics</strong>, and more — even for <strong>offline players</strong>.
+</p>
+<p>
+  This fork is tailored for <strong>Minecraft 1.17+</strong>, fully compatible with <strong>modern Paper-based servers</strong> and built to work seamlessly alongside popular plugins such as <strong>LuckPerms</strong>, <strong>Vault</strong>, <strong>EssentialsX</strong>, and external APIs for advanced features.
+</p>
 
-This forked version is specifically designed for Minecraft 1.17+ and supports all modern Paper-based servers using these versions.
+<hr>
 
-# Usage
-### 🕒 Playtime
-`%parseutils_seconds_played_[Notch]%`
-→ 123456
-Total playtime in seconds.
+<h2>✨ Features</h2>
+<ul>
+  <li>✅ Fully PlaceholderAPI-compatible</li>
+  <li>🌐 Supports UUID, GeoIP, rank info, join dates, and more</li>
+  <li>🧍 Works with online and offline players</li>
+  <li>⚙️ External integrations: LuckPerms, Vault, EssentialsX</li>
+  <li>🧠 Smart parsing system (e.g., thousands separator, formatting options)</li>
+  <li>📦 Supports dynamic formatting with locale and timezone</li>
+</ul>
 
-`%parseutils_minutes_played_[Notch]%`
-→ 2057
-Total playtime in minutes.
+<hr>
 
-`%parseutils_hours_played_[Notch]%`
-→ 34
-Total playtime in hours.
+<h2>🔧 Usage</h2>
 
-`%parseutils_days_played_[Notch]%`
-→ 1
-Total playtime in days.
+<h3>🕒 Playtime</h3>
+<pre>
+%parseutils_seconds_played_[Notch]% → 123456
+%parseutils_minutes_played_[Notch]% → 2057
+%parseutils_hours_played_[Notch]% → 34
+%parseutils_days_played_[Notch]% → 1
+</pre>
 
-Example using `formatted:` > `%parseutils_formatted:hours_played_[Notch]%`
-→ 1,234
-Playtime hours formatted with thousands separator formatting.
+<p><strong>Formatted:</strong></p>
+<pre>%parseutils_formatted:hours_played_[Notch]% → 1,234</pre>
 
-### 🧍 Player Information
-`%parseutils_uuid_[Notch]%`
-→ 069a79f4-44e9-4726-a5be-fca90e38aaf5
-Player's UUID.
+<hr>
 
-`%parseutils_realname_[nOtCh]%`
-→ Notch
-Player’s real name (case-sensitive).
+<h3>🧍 Player Information</h3>
+<pre>
+%parseutils_uuid_[Notch]% → 069a79f4-44e9-4726-a5be-fca90e38aaf5
+%parseutils_realname_[nOtCh]% → Notch
+%parseutils_first_joined_[Notch]% → May 22, 2025 at 2:04 AM
+</pre>
 
-`%parseutils_first_joined_[Notch]%`  
-→ May 22, 2025 at 2:04 AM  
-First join date in UTC time.  
+<p><strong>With timezone and locale:</strong></p>
+<pre>
+%parseutils_first_joined_[Notch]_America/New_York_en_US% → May 21, 2025 10:04 PM
+%parseutils_first_joined_[Notch]_Europe/Madrid_es_ES% → 22 may. 2025 4:04 AM
+%parseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP% → 5月22日 2025 11:04 午前
+</pre>
 
-Using parameters:  
-`%parseutils_first_joined_[Notch]_<timezone>_<locale>%`  
-→ Returns first join date in specified timezone and language format.  
+<p><strong>⚠️ Invalid parameters fallback to UTC / English.</strong></p>
+<p>
+  <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">🌐 TZ List</a> |
+  <a href="https://www.localeplanet.com/icu/">🗣️ Locale List</a>
+</p>
 
-Examples:  
-`%parseutils_first_joined_[Notch]_America/New_York_en_US%`  
-→ May 21, 2025 10:04 PM (EDT, English format)  
+<pre>
+%ecparseutils_first_joined_[Notch]% → May 22, 2025 at 2:04 AM
+</pre>
 
-`%parseutils_first_joined_[Notch]_Europe/Madrid_es_ES%`  
-→ 22 may. 2025 4:04 AM (CEST, Spanish format)  
+<hr>
 
-`%parseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP%`  
-→ 5月22日 2025 11:04 午前 (JST, Japanese format)  
+<h3>📅 Last Seen</h3>
+<pre>
+%parseutils_lastseen_seconds_[Notch]% → 540
+%parseutils_lastseen_minutes_[Notch]% → 9
+%parseutils_lastseen_hours_[Notch]% → 0
+%parseutils_lastseen_days_[Notch]% → 0
+</pre>
 
-:warning: **Invalid parameters default to UTC/English format.**  
+<p><strong>Formatted:</strong></p>
+<pre>%parseutils_lastseen_formatted:minutes_[Notch]% → 1,234</pre>
 
-Timezone (Use TZ Identifier): https://en.wikipedia.org/wiki/List_of_tz_database_time_zones  
-Locale (Use ID): https://www.localeplanet.com/icu/ (Valid format: idiom_REGION)  
+<hr>
 
-### 📅 Last seen
-`%parseutils_lastseen_seconds_[Notch]%`  
-→ 540  
-Seconds since last online.
+<h3>📊 Player Stats & Metadata</h3>
+<pre>
+%ecparseutils_exp_[Notch]% → 527
+%ecparseutils_fish_caught_[Notch]% → 43
+%ecparseutils_time_since_death_[Notch]% → 00:12:56
+%ecparseutils_totems_used_[Notch]% → 2
+%ecparseutils_health_[Notch]% → 18.0
+</pre>
 
-`%parseutils_lastseen_minutes_[Notch]%`  
-→ 9  
-Minutes since last online.
+<hr>
 
-`%parseutils_lastseen_hours_[Notch]%`  
-→ 0  
-Hours since last online.
+<h3>💸 Economy & Rank</h3>
+<pre>
+%ecparseutils_balance_[Notch]% → 1,200.75
+%ecparseutils_rank_[Notch]% → Knight
+%ecparseutils_rank_expire_[Notch]% → Knight (expires in 2d 4h)
+</pre>
 
-`%parseutils_lastseen_days_[Notch]%`  
-→ 0  
-Days since last online.
+<hr>
 
-Example using `formatted:` > `%parseutils_lastseen_formatted:minutes_[Notch]%`  
-→ 1,234  
-Minutes since last online with thousands separator formatting.
+<h3>🌍 Network & Location</h3>
+<pre>
+%ecparseutils_proxy_[Notch]% → false
+%ecparseutils_geoip_[Notch]% → Lima, Peru
+</pre>
 
-### Parsing other placeholders
-`%parseutils_parseother:[Notch]_placeholder%`  
-Example using a placeholder inside another placeholder > `%parseutils_parseother:[Notch]_formatter_text_uppercase_{player_name}%`  
-→ NOTCH
+<hr>
 
-# Behavior
+<h3>💤 EssentialsX</h3>
+<pre>
+%ecparseutils_afk_time_[Notch]% → 00:03:21
+</pre>
 
-- If the player is online, the `lastseen_`* placeholders return "online".
-- If the player has never joined the server, any placeholder returns "`PLAYER_NOT_FOUND`".
-- All player names are case-insensitive.
-- The player name must be enclosed in brackets: [player].
+<hr>
+
+<h3>🧠 Advanced Placeholder Parsing</h3>
+<pre>
+%parseutils_parseother:[Notch]_placeholder%
+%parseutils_parseother:[Notch]_formatter_text_uppercase_{player_name}% → NOTCH
+</pre>
+
+<hr>
+
+<h2>⚙️ Behavior</h2>
+<ul>
+  <li>If the player is <strong>online</strong>, the <code>lastseen_</code> placeholders return <code>"online"</code>.</li>
+  <li>If the player <strong>has never joined</strong>, all placeholders return <code>"PLAYER_NOT_FOUND"</code>.</li>
+  <li>Player names are <strong>case-insensitive</strong>, but must be wrapped in brackets: <code>[Player]</code>.</li>
+</ul>
+
+<hr>
+
+<h2>📦 Dependencies</h2>
+<ul>
+  <li><a href="https://www.spigotmc.org/resources/placeholderapi.6245/">PlaceholderAPI</a></li>
+  <li><a href="https://www.spigotmc.org/resources/vault.34315/">Vault</a> (for rank and balance)</li>
+  <li><a href="https://luckperms.net/">LuckPerms</a> (for rank_expire)</li>
+  <li><a href="https://essentialsx.net/">EssentialsX</a> (for afk_time and balance)</li>
+  <li>External IP Geolocation API</li>
+</ul>
