@@ -99,7 +99,7 @@
 <h3>🌍 Network & Location</h3>
 <pre>
 %ecparseutils_proxy_[Notch]% → false
-%ecparseutils_geoip_[Notch]% → Lima, Peru
+%ecparseutils_geoip_[Notch]% → 🇵🇪 Peru - Lima (IP: xxx.xxx.xxx.xxx)
 </pre>
 
 <hr>
