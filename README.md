@@ -1,7 +1,8 @@
 # ParseUtils-Expansion
-Una expansión avanzada de PlaceholderAPI que te permite recuperar y formatear datos específicos de los jugadores, como el tiempo de juego, las muertes, la salud, la experiencia y mucho más, incluso para los jugadores sin conexión.
 
-Esta versión bifurcada está diseñada específicamente para Minecraft 1.17+ y es compatible con todos los servidores modernos basados en papel que utilizan estas versiones.
+An advanced PlaceholderAPI expansion that lets you retrieve and format player-specific data such as playtime, kills, health, experience, and more — even for offline players.
+
+This forked version is specifically designed for Minecraft 1.17+ and supports all modern Paper-based servers using these versions.
 
 # Usage
 ### 🕒 Playtime
