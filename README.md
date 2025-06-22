@@ -26,29 +26,29 @@
 
 <h3>🕒 Playtime</h3>
 <pre>
-%parseutils_seconds_played_[Notch]% → 123456
-%parseutils_minutes_played_[Notch]% → 2057
-%parseutils_hours_played_[Notch]% → 34
-%parseutils_days_played_[Notch]% → 1
+%ecparseutils_seconds_played_[Notch]% → 123456
+%ecparseutils_minutes_played_[Notch]% → 2057
+%ecparseutils_hours_played_[Notch]% → 34
+%ecparseutils_days_played_[Notch]% → 1
 </pre>
 
 <p><strong>Formatted:</strong></p>
-<pre>%parseutils_formatted:hours_played_[Notch]% → 1,234</pre>
+<pre>%ecparseutils_formatted:hours_played_[Notch]% → 1,234</pre>
 
 <hr>
 
 <h3>🧍 Player Information</h3>
 <pre>
-%parseutils_uuid_[Notch]% → 069a79f4-44e9-4726-a5be-fca90e38aaf5
-%parseutils_realname_[nOtCh]% → Notch
-%parseutils_first_joined_[Notch]% → May 22, 2025 at 2:04 AM
+%ecparseutils_uuid_[Notch]% → 069a79f4-44e9-4726-a5be-fca90e38aaf5
+%ecparseutils_realname_[nOtCh]% → Notch
+%ecparseutils_first_joined_[Notch]% → May 22, 2025 at 2:04 AM
 </pre>
 
 <p><strong>With timezone and locale:</strong></p>
 <pre>
-%parseutils_first_joined_[Notch]_America/New_York_en_US% → May 21, 2025 10:04 PM
-%parseutils_first_joined_[Notch]_Europe/Madrid_es_ES% → 22 may. 2025 4:04 AM
-%parseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP% → 5月22日 2025 11:04 午前
+%ecparseutils_first_joined_[Notch]_America/New_York_en_US% → May 21, 2025 10:04 PM
+%ecparseutils_first_joined_[Notch]_Europe/Madrid_es_ES% → 22 may. 2025 4:04 AM
+%ecparseutils_first_joined_[Notch]_Asia/Tokyo_ja_JP% → 5月22日 2025 11:04 午前
 </pre>
 
 <p><strong>⚠️ Invalid parameters fallback to UTC / English.</strong></p>
@@ -65,14 +65,14 @@
 
 <h3>📅 Last Seen</h3>
 <pre>
-%parseutils_lastseen_seconds_[Notch]% → 540
-%parseutils_lastseen_minutes_[Notch]% → 9
-%parseutils_lastseen_hours_[Notch]% → 0
-%parseutils_lastseen_days_[Notch]% → 0
+%ecparseutils_lastseen_seconds_[Notch]% → 540
+%ecparseutils_lastseen_minutes_[Notch]% → 9
+%ecparseutils_lastseen_hours_[Notch]% → 0
+%ecparseutils_lastseen_days_[Notch]% → 0
 </pre>
 
 <p><strong>Formatted:</strong></p>
-<pre>%parseutils_lastseen_formatted:minutes_[Notch]% → 1,234</pre>
+<pre>%ECparseutils_lastseen_formatted:minutes_[Notch]% → 1,234</pre>
 
 <hr>
 
