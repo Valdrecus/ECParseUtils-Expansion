@@ -141,6 +141,23 @@ public class ParseUtils extends PlaceholderExpansion {
             case "realname": {
                 return target.getName();
             }
+            case "ping": {
+                if (target.isOnline() && target instanceof Player p) {
+                    return p.getPing() + " ms";
+                }
+                return "Ping no disponible";
+            }
+            case "online_status": {
+                boolean online = target.isOnline();
+                return online ? "🟢 En línea" : "🔴 Desconectado";
+            }
+            case "health": {
+                if (target.isOnline() && target instanceof Player p) {
+                    double health = p.getHealth();
+                    return String.format(Locale.US, "%.1f ♥", health);
+                }
+                return "Jugador desconectado";
+            }
             case "first_joined": {
                 long firstPlayed = target.getFirstPlayed();
                 if (firstPlayed <= 0) return "PLAYER_NOT_FOUND";
